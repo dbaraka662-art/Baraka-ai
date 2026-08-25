@@ -1,61 +1,107 @@
 import streamlit as st
 
-st.set_page_config(page_title="Baraka AI - Match Analyzer", page_icon="⚽", layout="centered")
+# Configuration de la page (Doit être la première ligne Streamlit)
+st.set_page_config(
+    page_title="Baraka AI - Match Analyzer",
+    page_icon="⚽",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
-st.title("⚽ Baraka AI - Match Analyzer")
-st.markdown("### Prédisez la mi-temps la plus prolifique en buts !")
+# Style CSS personnalisé pour un design pro et moderne (Dark Theme & Cartes stylées)
+st.markdown("""
+    <style>
+    /* Fond global de l'application */
+    .stApp {
+        background-color: #0e1117;
+        color: #ffffff;
+    }
+    
+    /* Style des titres principaux */
+    h1 {
+        color: #00ff7f;
+        font-weight: 800;
+        text-align: center;
+        letter-spacing: -1px;
+    }
+    
+    h3 {
+        color: #ffffff;
+        border-bottom: 2px solid #1f2937;
+        padding-bottom: 8px;
+    }
+    
+    /* Conteneurs stylés (Effet cartes) */
+    .card {
+        background-color: #161b22;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #30363d;
+        margin-bottom: 20px;
+    }
+    
+    /* Style de la boîte de résultat */
+    .result-box {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border: 2px solid #00ff7f;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        margin-top: 25px;
+        box-shadow: 0 4px 20px rgba(0, 255, 127, 0.2);
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-st.markdown("---")
+# En-tête de l'application
+st.markdown("<h1>⚽ Baraka AI - Match Analyzer</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #9ca3af; font-size: 16px;'>Prédisez la mi-temps la plus prolifique en buts avec précision !</p>", unsafe_allow_html=True)
+st.write("")
+
+# Section Équipe Domicile
+st.markdown("### 🏠 Équipe Domicile")
+team_home = st.text_input("Nom de l'équipe à domicile", "Arsenal", key="home")
 
 col1, col2 = st.columns(2)
-
 with col1:
-    st.subheader("🏠 Équipe Domicile")
-    equipe_dom = st.text_input("Nom de l'équipe", value="Arsenal")
-    moy_1mt_dom = st.slider(f"Moyenne buts 1MT ({equipe_dom})", 0.0, 2.0, 0.7, 0.1)
-    moy_2mt_dom = st.slider(f"Moyenne buts 2MT ({equipe_dom})", 0.0, 3.0, 1.4, 0.1)
-
+    home_1mt = st.slider(f"Buts 1MT ({team_home})", 0.0, 3.0, 1.5, 0.1)
 with col2:
-    st.subheader("✈️ Équipe Extérieur")
-    equipe_ext = st.text_input("Nom de l'équipe", value="Chelsea")
-    moy_1mt_ext = st.slider(f"Moyenne buts 1MT ({equipe_ext})", 0.0, 2.0, 0.5, 0.1)
-    moy_2mt_ext = st.slider(f"Moyenne buts 2MT ({equipe_ext})", 0.0, 3.0, 1.1, 0.1)
+    home_2mt = st.slider(f"Buts 2MT ({team_home})", 0.0, 3.0, 1.4, 0.1)
 
-st.markdown("---")
-st.subheader("⚙️ Facteurs Avancés")
-boost_h2h = st.checkbox("Historique H2H : Tendance forte aux buts précoces (+15% 1MT)", value=True)
+st.write("")
 
-if st.button("Lancer l'analyse Baraka AI 🚀", type="primary"):
-    potentiel_1mt = moy_1mt_dom + moy_1mt_ext
-    potentiel_2mt = moy_2mt_dom + moy_2mt_ext
+# Section Équipe Extérieure
+st.markdown("### ✈️ Équipe Extérieure")
+team_away = st.text_input("Nom de l'équipe à l'extérieur", "Chelsea", key="away")
+
+col3, col4 = st.columns(2)
+with col3:
+    away_1mt = st.slider(f"Buts 1MT ({team_away})", 0.0, 3.0, 1.1, 0.1)
+with col4:
+    away_2mt = st.slider(f"Buts 2MT ({team_away})", 0.0, 3.0, 1.6, 0.1)
+
+st.write("---")
+
+# Bouton d'analyse stylé
+if st.button("🚀 Lancer l'Analyse Avancée", use_container_width=True):
+    # Calculs simples basés sur les moyennes
+    total_home = home_1mt + home_2mt
+    total_away = away_1mt + away_2mt
     
-    if boost_h2h:
-        potentiel_1mt *= 1.15
-        
-    somme_totale = potentiel_1mt + potentiel_2mt
+    score_1mt = home_1mt + away_1mt
+    score_2mt = home_2mt + away_2mt
     
-    if somme_totale > 0:
-        prob_1mt = (potentiel_1mt / somme_totale) * 100
-        prob_2mt = (potentiel_2mt / somme_totale) * 100
+    st.markdown("<div class='result-box'>", unsafe_allow_html=True)
+    st.markdown("### 📊 Résultats de l'Analyse Baraka AI")
+    
+    st.write(f"**{team_home}** (Total attendu : {total_home:.2f}) vs **{team_away}** (Total attendu : {total_away:.2f})")
+    
+    if score_1mt > score_2mt:
+        st.success(🔥 **Tendance forte :** La **1ère mi-temps** sera la plus prolifique en buts !")
+    elif score_2mt > score_1mt:
+        st.success(🔥 **Tendance forte :** La **2ème mi-temps** sera la plus prolifique en buts !")
     else:
-        prob_1mt, prob_2mt = 50.0, 50.0
+        st.info(⚖️ **Équilibre parfait :** Autant de buts attendus en 1ère qu'en 2ème mi-temps.")
         
-    verdict = "1ère Mi-Temps (1MT)" if prob_1mt > prob_2mt else "2ème Mi-Temps (2MT)"
-    diff = abs(prob_1mt - prob_2mt)
-    
-    if diff > 25:
-        confiance = "🔥 Forte (Value Bet Recommandé)"
-    elif diff > 12:
-        confiance = "⚡ Moyenne"
-    else:
-        confiance = "⚠️ Faible (Match Neutre)"
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("---")
-    st.subheader(f"📊 Résultats pour : {equipe_dom} vs {equipe_ext}")
-    
-    col_res1, col_res2 = st.columns(2)
-    col_res1.metric(label="Probabilité But 1MT", value=f"{prob_1mt:.1f}%")
-    col_res2.metric(label="Probabilité But 2MT", value=f"{prob_2mt:.1f}%")
-    
-    st.success(f"🎯 **Mi-temps la plus prolifique :** {verdict}")
-    st.info(f"⚡ **Indice de Confiance :** {confiance}")
