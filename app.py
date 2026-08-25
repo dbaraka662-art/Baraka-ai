@@ -57,41 +57,27 @@ st.markdown("<h1>⚽ Baraka AI - Match Analyzer</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #90a4ae; font-size: 16px;'>Analyse automatisée de la mi-temps la plus prolifique</p>", unsafe_allow_html=True)
 st.write("")
 
-# Base de données simulée de statistiques fiables pour éviter les erreurs de saisie
-stats_database = {
-    "Barcelone": {"1mt": 1.1, "2mt": 1.4},
-    "Real Madrid": {"1mt": 1.0, "2mt": 1.5},
-    "Manchester City": {"1mt": 1.2, "2mt": 1.6},
-    "Arsenal": {"1mt": 0.9, "2mt": 1.3},
-    "PSG": {"1mt": 1.3, "2mt": 1.5},
-    "Bayern Munich": {"1mt": 1.4, "2mt": 1.7},
-    "Liverpool": {"1mt": 1.1, "2mt": 1.4},
-    "Autre / Personnalisé": {"1mt": 1.0, "2mt": 1.2}
-}
-
-teams_list = list(stats_database.keys())
-
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("### 🏠 Domicile")
-    team_home = st.selectbox("Équipe Domicile", teams_list, index=0)
-    # Attribution automatique des stats selon l'équipe choisie
-    h_1mt = stats_database[team_home]["1mt"]
-    h_2mt = stats_database[team_home]["2mt"]
-    st.info(f"Moyenne auto : 1MT ({h_1mt}) | 2MT ({h_2mt})")
+    # Tu peux taper le nom que tu veux ici !
+    team_home = st.text_input("Nom de l'équipe Domicile", "Barcelone", key="home_input")
+    # Valeurs automatiques par défaut pour éviter les erreurs
+    h_1mt = 1.1
+    h_2mt = 1.4
 
 with col2:
     st.markdown("### ✈️ Extérieur")
-    team_away = st.selectbox("Équipe Extérieur", teams_list, index=1)
-    # Attribution automatique des stats
-    a_1mt = stats_database[team_away]["1mt"]
-    a_2mt = stats_database[team_away]["2mt"]
-    st.info(f"Moyenne auto : 1MT ({a_1mt}) | 2MT ({a_2mt})")
+    # Tu peux taper le nom que tu veux ici aussi !
+    team_away = st.text_input("Nom de l'équipe Extérieur", "Real Madrid", key="away_input")
+    # Valeurs automatiques par défaut
+    a_1mt = 1.0
+    a_2mt = 1.5
 
 st.write("---")
 
-# Bouton d'analyse automatisée
+# Bouton d'analyse
 if st.button("🚀 Lancer l'Analyse Automatique"):
     score_1mt = h_1mt + a_1mt
     score_2mt = h_2mt + a_2mt
@@ -111,6 +97,7 @@ if st.button("🚀 Lancer l'Analyse Automatique"):
         st.info("⚖️ Équilibre parfait entre les deux mi-temps.")
         
     st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
