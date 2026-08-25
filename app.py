@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Configuration de la page (Doit être la première ligne Streamlit)
+# Configuration de la page
 st.set_page_config(
     page_title="Baraka AI - Match Analyzer",
     page_icon="⚽",
@@ -8,30 +8,24 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Style CSS personnalisé pour un design pro et moderne (Dark Theme & Cartes stylées)
+# Style CSS personnalisé pour un design pro et moderne
 st.markdown("""
     <style>
-    /* Fond global de l'application */
     .stApp {
         background-color: #0e1117;
         color: #ffffff;
     }
-    
-    /* Style des titres principaux */
     h1 {
         color: #00ff7f;
         font-weight: 800;
         text-align: center;
         letter-spacing: -1px;
     }
-    
     h3 {
         color: #ffffff;
         border-bottom: 2px solid #1f2937;
         padding-bottom: 8px;
     }
-    
-    /* Conteneurs stylés (Effet cartes) */
     .card {
         background-color: #161b22;
         padding: 20px;
@@ -39,8 +33,6 @@ st.markdown("""
         border: 1px solid #30363d;
         margin-bottom: 20px;
     }
-    
-    /* Style de la boîte de résultat */
     .result-box {
         background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
         border: 2px solid #00ff7f;
@@ -84,7 +76,6 @@ st.write("---")
 
 # Bouton d'analyse stylé
 if st.button("🚀 Lancer l'Analyse Avancée", use_container_width=True):
-    # Calculs simples basés sur les moyennes
     total_home = home_1mt + home_2mt
     total_away = away_1mt + away_2mt
     
@@ -97,11 +88,12 @@ if st.button("🚀 Lancer l'Analyse Avancée", use_container_width=True):
     st.write(f"**{team_home}** (Total attendu : {total_home:.2f}) vs **{team_away}** (Total attendu : {total_away:.2f})")
     
     if score_1mt > score_2mt:
-        st.success(🔥 **Tendance forte :** La **1ère mi-temps** sera la plus prolifique en buts !")
+        st.success("🔥 Tendance forte : La 1ère mi-temps sera la plus prolifique en buts !")
     elif score_2mt > score_1mt:
-        st.success(🔥 **Tendance forte :** La **2ème mi-temps** sera la plus prolifique en buts !")
+        st.success("🔥 Tendance forte : La 2ème mi-temps sera la plus prolifique en buts !")
     else:
-        st.info(⚖️ **Équilibre parfait :** Autant de buts attendus en 1ère qu'en 2ème mi-temps.")
+        st.info("⚖️ Équilibre parfait : Autant de buts attendus en 1ère qu'en 2ème mi-temps.")
         
     st.markdown("</div>", unsafe_allow_html=True)
+
 
