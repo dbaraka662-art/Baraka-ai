@@ -4,130 +4,182 @@ import streamlit as st
 st.set_page_config(
     page_title="Baraka AI - Match Analyzer Pro",
     page_icon="⚽",
-    layout="centered",
+    layout="wide",  # Mode large pour un affichage horizontal moderne
     initial_sidebar_state="collapsed"
 )
 
-# Style CSS Pro et Moderne (Mode Sombre)
+# Style CSS pour un design horizontal, sombre et haut de gamme
 st.markdown("""
     <style>
     .stApp {
-        background-color: #121212;
-        color: #e0e0e0;
+        background-color: #0d1117;
+        color: #f0f6fc;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    h1 {
-        color: #2ecc71;
-        font-weight: 800;
+    .hero-banner {
+        background: linear-gradient(135deg, #1f6feb 0%, #238636 100%);
+        padding: 30px;
+        border-radius: 16px;
         text-align: center;
-        letter-spacing: -1px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
-    h3 {
+    .hero-banner h1 {
         color: #ffffff;
-        border-bottom: 1px solid #333;
-        padding-bottom: 8px;
-        margin-top: 25px;
+        font-weight: 900;
+        font-size: 2.2rem;
+        margin-bottom: 10px;
     }
-    .stButton > button {
-        background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
-        color: white;
-        border: none;
-        padding: 12px 28px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 1rem;
-        width: 100%;
-        box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+    .hero-banner p {
+        color: #e6edf3;
+        font-size: 1.1rem;
     }
-    .stButton > button:hover {
-        background: linear-gradient(90deg, #27ae60 100%, #219150 100%);
-    }
-    .result-box {
-        background: linear-gradient(135deg, #1e1e1e 0%, #2c2c2c 100%);
-        border-left: 6px solid #2ecc71;
+    .card {
+        background-color: #161b22;
+        border: 1px solid #30363d;
         padding: 20px;
         border-radius: 12px;
-        margin-top: 25px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .stButton > button {
+        background: linear-gradient(90deg, #238636 0%, #2ea043 100%);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        width: 100%;
+        box-shadow: 0 4px 14px rgba(35, 134, 54, 0.4);
+    }
+    .stButton > button:hover {
+        background: linear-gradient(90deg, #2ea043 0%, #3fb950 100%);
+    }
+    .result-box {
+        background: linear-gradient(135deg, #161b22 0%, #1f242c 100%);
+        border-left: 6px solid #238636;
+        border-top: 1px solid #30363d;
+        border-right: 1px solid #30363d;
+        border-bottom: 1px solid #30363d;
+        padding: 25px;
+        border-radius: 12px;
+        margin-top: 30px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# En-tête
-st.markdown("<h1>⚽ Baraka AI - Match Analyzer Pro</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #90a4ae; font-size: 16px;'>Analyse Avancée : Forme, Classement & Mi-temps Prolifique</p>", unsafe_allow_html=True)
+# Bannière d'en-tête professionnelle style grand site
+st.markdown("""
+    <div class="hero-banner">
+        <h1>⚽ BARAKA AI - MATCH ANALYZER PRO</h1>
+        <p>Plateforme d'intelligence artificielle dédiée aux tendances de matchs, probabilités et buts par mi-temps.</p>
+    </div>
+""", unsafe_allow_html=True)
+
+# Base de données intelligente (Automatique pour éviter les erreurs et les curseurs manuels)
+db_teams = {
+    "Barcelone": {"rank": 2, "form": "🔥 3 Victoires", "g1": 1.2, "g2": 1.6},
+    "Real Madrid": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.1, "g2": 1.7},
+    "Manchester City": {"rank": 3, "form": "⚖️ 2V - 1N", "g1": 1.3, "g2": 1.8},
+    "Arsenal": {"rank": 4, "form": "⚖️ 2V - 1N", "g1": 1.0, "g2": 1.4},
+    "PSG": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.4, "g2": 1.6},
+    "Bayern Munich": {"rank": 2, "form": "⚖️ 2V - 1N", "g1": 1.5, "g2": 1.9},
+    "Liverpool": {"rank": 5, "form": "⚖️ 1V - 2D", "g1": 1.1, "g2": 1.3}
+}
+
+teams_list = list(db_teams.keys())
+
+# Disposition Horizontale : Colonne Domicile vs Colonne Extérieur côte à côte
+col_home, col_vs, col_away = st.columns([5, 1, 5])
+
+with col_home:
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("### 🏠 Équipe Domicile")
+    sel_home = st.selectbox("Sélectionner l'équipe", teams_list, index=0, key="h_sel")
+    
+    # Récupération automatique des données
+    h_data = db_teams[sel_home]
+    st.write(f"• **Classement auto :** {h_data['rank']}e")
+    st.write(f"• **Forme récente :** {h_data['form']}")
+    st.write(f"• **Moy. Buts (1MT / 2MT) :** {h_data['g1']} / {h_data['g2']}")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+with col_vs:
+    st.markdown("<br><br><h2 style='text-align: center; color: #8b949e;'>VS</h2>", unsafe_allow_html=True)
+
+with col_away:
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.markdown("### ✈️ Équipe Extérieure")
+    sel_away = st.selectbox("Sélectionner l'équipe", teams_list, index=1, key="a_sel")
+    
+    # Récupération automatique des données
+    a_data = db_teams[sel_away]
+    st.write(f"• **Classement auto :** {a_data['rank']}e")
+    st.write(f"• **Forme récente :** {a_data['form']}")
+    st.write(f"• **Moy. Buts (1MT / 2MT) :** {a_data['g1']} / {a_data['g2']}")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+st.write("")
 st.write("")
 
-col1, col2 = st.columns(2)
+# Bouton d'analyse centré
+col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+with col_btn2:
+    run_analysis = st.button("🚀 LANCER L'ANALYSE PROFESSIONNELLE")
 
-with col1:
-    st.markdown("### 🏠 Équipe Domicile")
-    team_home = st.text_input("Nom Domicile", "Barcelone", key="home_name")
-    home_rank = st.number_input("Classement actuel", min_value=1, max_value=20, value=2, key="h_rank")
-    home_form = st.selectbox("Forme (3 derniers matchs)", ["🔥 3 Victoires", "⚖️ 2V - 1N", "⚖️ 1V - 2D", "❌ 3 Défaites"], index=0, key="h_form")
-    home_goals_1mt = st.slider("Moy. buts 1MT", 0.0, 3.0, 1.1, 0.1, key="h_g1")
-    home_goals_2mt = st.slider("Moy. buts 2MT", 0.0, 3.0, 1.5, 0.1, key="h_g2")
-
-with col2:
-    st.markdown("### ✈️ Équipe Extérieur")
-    team_away = st.text_input("Nom Extérieur", "Real Madrid", key="away_name")
-    away_rank = st.number_input("Classement actuel", min_value=1, max_value=20, value=1, key="a_rank")
-    away_form = st.selectbox("Forme (3 derniers matchs)", ["🔥 3 Victoires", "⚖️ 2V - 1N", "⚖️ 1V - 2D", "❌ 3 Défaites"], index=1, key="a_form")
-    away_goals_1mt = st.slider("Moy. buts 1MT", 0.0, 3.0, 0.9, 0.1, key="a_g1")
-    away_goals_2mt = st.slider("Moy. buts 2MT", 0.0, 3.0, 1.3, 0.1, key="a_g2")
-
-st.write("---")
-
-# Bouton d'analyse professionnelle
-if st.button("🚀 Lancer l'Analyse Professionnelle"):
-    
+if run_analysis:
     # 1. Calcul des buts par mi-temps
-    score_1mt = home_goals_1mt + away_goals_1mt
-    score_2mt = home_goals_2mt + away_goals_2mt
+    score_1mt = h_data["g1"] + a_data["g1"]
+    score_2mt = h_data["g2"] + a_data["g2"]
     
-    # 2. Logique de calcul de la probabilité de victoire (basée sur le classement et la forme récente)
-    # Plus le classement est petit (ex: 1er vs 5e) et la forme bonne, plus l'équipe a de points de score
-    form_points = {"🔥 3 Victoires": 3, "⚖️ 2V - 1N": 2, "⚖️ 1V - 2D": 1, "❌ 3 Défaites": 0}
+    # 2. Logique de calcul des probabilités de victoire (basée sur le classement et la forme)
+    form_pts = {"🔥 3 Victoires": 3, "⚖️ 2V - 1N": 2, "⚖️ 1V - 2D": 1, "❌ 3 Défaites": 0}
     
-    home_strength = (21 - home_rank) * 2 + form_points[home_form]
-    away_strength = (21 - away_rank) * 2 + form_points[away_form]
+    h_strength = (21 - h_data["rank"]) * 2 + form_pts[h_data["form"]]
+    a_strength = (21 - a_data["rank"]) * 2 + form_pts[a_data["form"]]
     
-    total_strength = home_strength + away_strength
-    if total_strength == 0:
-        total_strength = 1
+    total_str = h_strength + a_strength
+    if total_str == 0: 
+        total_str = 1
         
-    prob_home = (home_strength / total_strength) * 100
-    prob_away = (away_strength / total_strength) * 100
-    prob_draw = max(10, 100 - (abs(prob_home - prob_away) + 40)) # Estimation réaliste du match nul
-    # Rééquilibrage pour centrer sur 100%
-    sum_p = prob_home + prob_away + prob_draw
-    prob_home = (prob_home / sum_p) * 100
-    prob_away = (prob_away / sum_p) * 100
-    prob_draw = (prob_draw / sum_p) * 100
+    p_home = (h_strength / total_str) * 100
+    p_away = (a_strength / total_str) * 100
+    p_draw = max(12, 100 - (abs(p_home - p_away) + 35))
+    
+    sum_p = p_home + p_away + p_draw
+    p_home = (p_home / sum_p) * 100
+    p_away = (p_away / sum_p) * 100
+    p_draw = (p_draw / sum_p) * 100
 
-    # Affichage des résultats professionnels
+    # Affichage du rapport professionnel horizontal
     st.markdown("<div class='result-box'>", unsafe_allow_html=True)
-    st.markdown("<h3>📊 Rapport d'Analyse Avancée - Baraka AI</h3>", unsafe_allow_html=True)
-    st.write(f"**Affiche :** {team_home} (Classé {home_rank}e) vs {team_away} (Classé {away_rank}e)")
+    st.markdown("<h2 style='color: #3fb950; text-align: center;'>📊 RAPPORT D'ANALYSE OFFICIEL</h2>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center; font-size: 1.2rem;'><b>{sel_home}</b> vs <b>{sel_away}</b></p>", unsafe_allow_html=True)
+    st.write("---")
+    
+    res_col1, res_col2 = st.columns(2)
+    
+    with res_col1:
+        st.markdown("#### 🎯 Probabilités du Match")
+        st.write(f"• Victoire **{sel_home}** : **{p_home:.1f}%**")
+        st.write(f"• Match Nul : **{p_draw:.1f}%**")
+        st.write(f"• Victoire **{sel_away}** : **{p_away:.1f}%**")
+        
+    with res_col2:
+        st.markdown("#### ⏱️ Tendances des Mi-Temps")
+        st.write(f"• Buts attendus 1MT : **{score_1mt:.2f}**")
+        st.write(f"• Buts attendus 2MT : **{score_2mt:.2f}**")
+        
     st.write("")
-    
-    st.markdown("#### 🎯 Probabilités de Victoire & Issue du Match")
-    st.write(f"• Victoire **{team_home}** : **{prob_home:.1f}%**")
-    st.write(f"• Match Nul : **{prob_draw:.1f}%**")
-    st.write(f"• Victoire **{team_away}** : **{prob_away:.1f}%**")
-    st.write("")
-    
-    st.markdown("#### ⏱️ Analyse des Mi-Temps (Buts Attendus)")
-    st.write(f"• Buts 1ère mi-temps (1MT) : **{score_1mt:.2f}**")
-    st.write(f"• Buts 2ème mi-temps (2MT) : **{score_2mt:.2f}**")
-    
     if score_1mt > score_2mt:
-        st.success("🔥 **Conseil Mi-Temps :** La 1ère mi-temps sera la plus prolifique en buts !")
+        st.success("🔥 **Avis IA :** La 1ère mi-temps est statistiquement la plus prolifique en buts !")
     elif score_2mt > score_1mt:
-        st.success("🔥 **Conseil Mi-Temps :** La 2ème mi-temps sera la plus prolifique en buts !")
+        st.success("🔥 **Avis IA :** La 2ème mi-temps est statistiquement la plus prolifique en buts !")
     else:
-        st.info("⚖️ **Conseil Mi-Temps :** Équilibre parfait entre les deux mi-temps.")
+        st.info("⚖️ **Avis IA :** Activité offensive équilibrée entre les deux mi-temps.")
         
     st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
