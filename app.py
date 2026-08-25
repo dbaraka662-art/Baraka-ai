@@ -53,7 +53,7 @@ st.markdown("""
         box-shadow: 0 4px 14px rgba(35, 134, 54, 0.4);
     }
     .stButton > button:hover {
-        background: linear-gradient(90deg, #2ea043 0%, #3fb950 100%);
+        background: linear-gradient(90deg, #2ea043 100%, #3fb950 100%);
     }
     .result-box {
         background: linear-gradient(135deg, #161b22 0%, #1f242c 100%);
@@ -72,40 +72,67 @@ st.markdown("""
 st.markdown("""
     <div class="hero-banner">
         <h1>⚽ BARAKA AI - MATCH ANALYZER PRO</h1>
-        <p>Analyse européenne avancée : Classements, formes actuelles, probabilités 1N2 et buts par mi-temps.</p>
+        <p>Analyse européenne globale : Premier League, La Liga, Serie A, Bundesliga, Ligue 1 & République tchèque.</p>
     </div>
 """, unsafe_allow_html=True)
 
-# Base de données élargie des grands championnats européens (Statistiques, Classements et Forme)
+# Base de données massive : Top championnats européens + République tchèque
 db_teams = {
-    # Espagne (La Liga)
-    "Real Madrid": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.1, "g2": 1.7},
-    "Barcelone": {"rank": 2, "form": "🔥 3 Victoires", "g1": 1.2, "g2": 1.6},
-    "Atlético de Madrid": {"rank": 3, "form": "⚖️ 2V - 1N", "g1": 0.9, "g2": 1.3},
-    "Real Sociedad": {"rank": 6, "form": "⚖️ 1V - 2D", "g1": 0.8, "g2": 1.1},
-    
-    # Angleterre (Premier League)
-    "Manchester City": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.3, "g2": 1.8},
-    "Arsenal": {"rank": 2, "form": "🔥 3 Victoires", "g1": 1.2, "g2": 1.5},
-    "Liverpool": {"rank": 3, "form": "⚖️ 2V - 1N", "g1": 1.1, "g2": 1.6},
-    "Chelsea": {"rank": 5, "form": "⚖️ 1V - 2D", "g1": 1.0, "g2": 1.4},
-    "Manchester United": {"rank": 7, "form": "⚖️ 1V - 2D", "g1": 0.9, "g2": 1.2},
-    
-    # Italie (Serie A)
-    "Inter Milan": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.2, "g2": 1.6},
-    "Juventus": {"rank": 2, "form": "⚖️ 2V - 1N", "g1": 0.8, "g2": 1.3},
-    "AC Milan": {"rank": 3, "form": "⚖️ 2V - 1N", "g1": 1.1, "g2": 1.4},
-    "Napoli": {"rank": 4, "form": "⚖️ 1V - 2D", "g1": 1.0, "g2": 1.3},
-    
-    # Allemagne (Bundesliga)
-    "Bayern Munich": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.5, "g2": 1.9},
-    "Bayer Leverkusen": {"rank": 2, "form": "🔥 3 Victoires", "g1": 1.3, "g2": 1.7},
-    "Borussia Dortmund": {"rank": 4, "form": "⚖️ 2V - 1N", "g1": 1.2, "g2": 1.5},
-    
-    # France (Ligue 1)
-    "PSG": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.4, "g2": 1.8},
-    "Monaco": {"rank": 2, "form": "⚖️ 2V - 1N", "g1": 1.1, "g2": 1.4},
-    "Marseille": {"rank": 4, "form": "⚖️ 1V - 2D", "g1": 1.0, "g2": 1.3}
+    # --- ANGLETERRE (Premier League) ---
+    "Manchester City (ENG)": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.3, "g2": 1.8},
+    "Arsenal (ENG)": {"rank": 2, "form": "🔥 3 Victoires", "g1": 1.2, "g2": 1.5},
+    "Liverpool (ENG)": {"rank": 3, "form": "⚖️ 2V - 1N", "g1": 1.1, "g2": 1.6},
+    "Aston Villa (ENG)": {"rank": 4, "form": "⚖️ 2V - 1N", "g1": 1.0, "g2": 1.4},
+    "Tottenham (ENG)": {"rank": 5, "form": "⚖️ 1V - 2D", "g1": 1.2, "g2": 1.5},
+    "Chelsea (ENG)": {"rank": 6, "form": "⚖️ 1V - 2D", "g1": 1.0, "g2": 1.4},
+    "Manchester United (ENG)": {"rank": 7, "form": "⚖️ 1V - 2D", "g1": 0.9, "g2": 1.2},
+    "Newcastle (ENG)": {"rank": 8, "form": "⚖️ 2V - 1N", "g1": 1.1, "g2": 1.3},
+    "West Ham (ENG)": {"rank": 9, "form": "❌ 3 Défaites", "g1": 0.8, "g2": 1.2},
+
+    # --- ESPAGNE (La Liga) ---
+    "Real Madrid (ESP)": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.1, "g2": 1.7},
+    "Barcelone (ESP)": {"rank": 2, "form": "🔥 3 Victoires", "g1": 1.2, "g2": 1.6},
+    "Girona (ESP)": {"rank": 3, "form": "⚖️ 2V - 1N", "g1": 1.1, "g2": 1.5},
+    "Atlético de Madrid (ESP)": {"rank": 4, "form": "⚖️ 2V - 1N", "g1": 0.9, "g2": 1.3},
+    "Athletic Bilbao (ESP)": {"rank": 5, "form": "⚖️ 2V - 1N", "g1": 1.0, "g2": 1.2},
+    "Real Sociedad (ESP)": {"rank": 6, "form": "⚖️ 1V - 2D", "g1": 0.8, "g2": 1.1},
+    "Real Betis (ESP)": {"rank": 7, "form": "⚖️ 1V - 2D", "g1": 0.9, "g2": 1.2},
+
+    # --- ITALIE (Serie A) ---
+    "Inter Milan (ITA)": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.2, "g2": 1.6},
+    "AC Milan (ITA)": {"rank": 2, "form": "⚖️ 2V - 1N", "g1": 1.1, "g2": 1.4},
+    "Juventus (ITA)": {"rank": 3, "form": "⚖️ 2V - 1N", "g1": 0.8, "g2": 1.3},
+    "Atalanta (ITA)": {"rank": 4, "form": "🔥 3 Victoires", "g1": 1.1, "g2": 1.5},
+    "Bologna (ITA)": {"rank": 5, "form": "⚖️ 2V - 1N", "g1": 0.9, "g2": 1.1},
+    "AS Roma (ITA)": {"rank": 6, "form": "⚖️ 1V - 2D", "g1": 1.0, "g2": 1.3},
+    "Napoli (ITA)": {"rank": 7, "form": "⚖️ 1V - 2D", "g1": 1.0, "g2": 1.3},
+    "Lazio (ITA)": {"rank": 8, "form": "⚖️ 1V - 2D", "g1": 0.9, "g2": 1.2},
+
+    # --- ALLEMAGNE (Bundesliga) ---
+    "Bayer Leverkusen (GER)": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.3, "g2": 1.7},
+    "Bayern Munich (GER)": {"rank": 2, "form": "🔥 3 Victoires", "g1": 1.5, "g2": 1.9},
+    "Stuttgart (GER)": {"rank": 3, "form": "🔥 3 Victoires", "g1": 1.2, "g2": 1.6},
+    "Leipzig (GER)": {"rank": 4, "form": "⚖️ 2V - 1N", "g1": 1.1, "g2": 1.4},
+    "Borussia Dortmund (GER)": {"rank": 5, "form": "⚖️ 2V - 1N", "g1": 1.2, "g2": 1.5},
+    "Eintracht Frankfurt (GER)": {"rank": 6, "form": "⚖️ 1V - 2D", "g1": 1.0, "g2": 1.3},
+
+    # --- FRANCE (Ligue 1) ---
+    "PSG (FRA)": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.4, "g2": 1.8},
+    "Monaco (FRA)": {"rank": 2, "form": "⚖️ 2V - 1N", "g1": 1.1, "g2": 1.4},
+    "Brest (FRA)": {"rank": 3, "form": "🔥 3 Victoires", "g1": 0.9, "g2": 1.2},
+    "Lille (FRA)": {"rank": 4, "form": "⚖️ 2V - 1N", "g1": 1.0, "g2": 1.3},
+    "Nice (FRA)": {"rank": 5, "form": "⚖️ 1V - 2D", "g1": 0.8, "g2": 1.1},
+    "Marseille (FRA)": {"rank": 6, "form": "⚖️ 1V - 2D", "g1": 1.0, "g2": 1.3},
+    "Lyon (FRA)": {"rank": 7, "form": "🔥 3 Victoires", "g1": 1.1, "g2": 1.4},
+    "Lens (FRA)": {"rank": 8, "form": "⚖️ 1V - 2D", "g1": 0.9, "g2": 1.2},
+
+    # --- RÉPUBLIQUE TCHÈQUE (Chance Liga) ---
+    "Sparta Prague (CZE)": {"rank": 1, "form": "🔥 3 Victoires", "g1": 1.2, "g2": 1.6},
+    "Slavia Prague (CZE)": {"rank": 2, "form": "🔥 3 Victoires", "g1": 1.2, "g2": 1.5},
+    "Viktoria Plzeň (CZE)": {"rank": 3, "form": "⚖️ 2V - 1N", "g1": 1.1, "g2": 1.4},
+    "Baník Ostrava (CZE)": {"rank": 4, "form": "⚖️ 2V - 1N", "g1": 0.9, "g2": 1.2},
+    "Mladá Boleslav (CZE)": {"rank": 5, "form": "⚖️ 1V - 2D", "g1": 1.0, "g2": 1.3},
+    "Slovácko (CZE)": {"rank": 6, "form": "⚖️ 1V - 2D", "g1": 0.8, "g2": 1.1}
 }
 
 teams_list = sorted(list(db_teams.keys()))
@@ -116,7 +143,7 @@ col_home, col_vs, col_away = st.columns([5, 1, 5])
 with col_home:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("### 🏠 Équipe Domicile")
-    sel_home = st.selectbox("Choisir l'équipe Domicile", teams_list, index=teams_list.index("Barcelone"), key="h_sel")
+    sel_home = st.selectbox("Choisir l'équipe Domicile", teams_list, index=teams_list.index("Barcelone (ESP)"), key="h_sel")
     
     h_data = db_teams[sel_home]
     st.write(f"• **Classement officiel :** {h_data['rank']}e")
@@ -130,7 +157,7 @@ with col_vs:
 with col_away:
     st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.markdown("### ✈️ Équipe Extérieure")
-    sel_away = st.selectbox("Choisir l'équipe Extérieure", teams_list, index=teams_list.index("Real Madrid"), key="a_sel")
+    sel_away = st.selectbox("Choisir l'équipe Extérieure", teams_list, index=teams_list.index("Real Madrid (ESP)"), key="a_sel")
     
     a_data = db_teams[sel_away]
     st.write(f"• **Classement officiel :** {a_data['rank']}e")
@@ -198,6 +225,7 @@ if run_analysis:
         st.info("⚖️ **Avis IA :** Activité offensive équilibrée entre les deux mi-temps.")
         
     st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
