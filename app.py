@@ -1,7 +1,10 @@
 import streamlit as st
 import random
 
-# Configuration de la page
+# ============================================================
+# CONFIGURATION
+# ============================================================
+
 st.set_page_config(
     page_title="BARAKA AI - Match Analyzer Pro",
     page_icon="⚽",
@@ -9,190 +12,466 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Style CSS pour un design professionnel type grand site de paris
+# ============================================================
+# STYLE
+# ============================================================
+
 st.markdown("""
-    <style>
-    .stApp {
-        background-color: #0d1117;
-        color: #f0f6fc;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #161b22;
-        padding: 12px 24px;
-        border-bottom: 1px solid #30363d;
-        border-radius: 8px;
-        margin-bottom: 20px;
-    }
-    .logo {
-        color: #2ea043;
-        font-weight: 900;
-        font-size: 1.5rem;
-        letter-spacing: 1px;
-    }
-    .nav-links {
-        color: #8b949e;
-        font-size: 0.95rem;
-        font-weight: 600;
-    }
-    .hero {
-        background: linear-gradient(135deg, #090d16 0%, #162235 100%);
-        border: 1px solid #30363d;
-        padding: 40px;
-        border-radius: 16px;
-        margin-bottom: 30px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    }
-    .hero h1 {
-        color: #ffffff;
-        font-weight: 900;
-        font-size: 2.3rem;
-        margin-bottom: 10px;
-    }
-    .hero p {
-        color: #8b949e;
-        font-size: 1.1rem;
-    }
-    .card {
-        background-color: #161b22;
-        border: 1px solid #30363d;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    .stButton > button {
-        background: linear-gradient(90deg, #238636 0%, #2ea043 100%);
-        color: white;
-        border: none;
-        padding: 14px 28px;
-        border-radius: 8px;
-        font-weight: 700;
-        font-size: 1.1rem;
-        width: 100%;
-        box-shadow: 0 4px 14px rgba(35, 134, 54, 0.4);
-    }
-    .stButton > button:hover {
-        background: linear-gradient(90deg, #2ea043 100%, #3fb950 100%);
-    }
-    .result-box {
-        background: linear-gradient(135deg, #161b22 0%, #1f242c 100%);
-        border-left: 6px solid #2ea043;
-        border: 1px solid #30363d;
-        padding: 25px;
-        border-radius: 12px;
-        margin-top: 30px;
-    }
-    </style>
+<style>
+
+.stApp {
+    background: #0d1117;
+    color: #f0f6fc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 Roboto, sans-serif;
+}
+
+/* Header */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: #111820;
+    border-bottom: 1px solid #26303a;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.logo span {
+    color: #19c37d;
+}
+
+.status {
+    background: #10251d;
+    color: #19c37d;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Cards */
+.card {
+    background: #151b23;
+    border: 1px solid #27313b;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 18px;
+}
+
+.card-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.big-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: #19c37d;
+}
+
+.small-text {
+    color: #8b949e;
+    font-size: 13px;
+}
+
+/* Verdict */
+.verdict {
+    background: linear-gradient(135deg, #10251d, #151b23);
+    border: 1px solid #19c37d;
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+}
+
+.verdict-title {
+    color: #8b949e;
+    font-size: 14px;
+}
+
+.verdict-main {
+    font-size: 30px;
+    font-weight: 800;
+    color: #19c37d;
+    margin: 8px 0;
+}
+
+.confidence {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Team */
+.team {
+    text-align: center;
+    background: #151b23;
+    border: 1px solid #27313b;
+    border-radius: 14px;
+    padding: 25px;
+}
+
+.team-icon {
+    font-size: 45px;
+}
+
+.team-name {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+/* Progress */
+.progress-container {
+    background: #252c35;
+    height: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #19c37d;
+}
+
+/* Hide Streamlit menu */
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+</style>
 """, unsafe_allow_html=True)
 
-# Barre de navigation supérieure
+# ============================================================
+# HEADER
+# ============================================================
+
 st.markdown("""
-    <div class="navbar">
-        <div class="logo">⚽ BARAKA<span style="color: #ffffff;">AI</span></div>
-        <div class="nav-links">Accueil &nbsp;&nbsp;|&nbsp;&nbsp; Auto Expert Analyzer &nbsp;&nbsp;|&nbsp;&nbsp; Live Stats &nbsp;&nbsp;|&nbsp;&nbsp; Aide</div>
+<div class="navbar">
+    <div class="logo">⚽ BARAKA <span>AI</span></div>
+    <div class="status">● ANALYSEUR PRO ACTIF</div>
+</div>
+""", unsafe_allow_html=True)
+
+st.title("Match Analyzer Pro")
+st.caption(
+    "Analyse statistique avancée des buts par mi-temps"
+)
+
+# ============================================================
+# SELECTION DES EQUIPES
+# ============================================================
+
+col1, col2, col3 = st.columns([1, 0.3, 1])
+
+with col1:
+    team_a = st.text_input(
+        "Équipe à domicile",
+        value="Équipe A"
+    )
+
+with col2:
+    st.markdown(
+        "<h2 style='text-align:center;margin-top:25px;'>VS</h2>",
+        unsafe_allow_html=True
+    )
+
+with col3:
+    team_b = st.text_input(
+        "Équipe à l'extérieur",
+        value="Équipe B"
+    )
+
+st.divider()
+
+# ============================================================
+# DONNEES
+# ============================================================
+
+st.subheader("📊 Données statistiques")
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    buts_1_a = st.number_input(
+        f"{team_a} — buts 1re MT",
+        min_value=0.0,
+        max_value=10.0,
+        value=0.8,
+        step=0.1
+    )
+
+with col2:
+    buts_2_a = st.number_input(
+        f"{team_a} — buts 2e MT",
+        min_value=0.0,
+        max_value=10.0,
+        value=1.2,
+        step=0.1
+    )
+
+with col3:
+    buts_1_b = st.number_input(
+        f"{team_b} — buts 1re MT",
+        min_value=0.0,
+        max_value=10.0,
+        value=0.7,
+        step=0.1
+    )
+
+with col4:
+    buts_2_b = st.number_input(
+        f"{team_b} — buts 2e MT",
+        min_value=0.0,
+        max_value=10.0,
+        value=1.1,
+        step=0.1
+    )
+
+# ============================================================
+# CALCUL
+# ============================================================
+
+total_1 = buts_1_a + buts_1_b
+total_2 = buts_2_a + buts_2_b
+
+total = total_1 + total_2
+
+if total > 0:
+    proba_1 = (total_1 / total) * 100
+    proba_2 = (total_2 / total) * 100
+else:
+    proba_1 = 50
+    proba_2 = 50
+
+if proba_1 > proba_2:
+    meilleure_mi_temps = "1RE MI-TEMPS"
+    confiance = proba_1
+else:
+    meilleure_mi_temps = "2E MI-TEMPS"
+    confiance = proba_2
+
+# ============================================================
+# INDICATEURS
+# ============================================================
+
+st.subheader("🔥 Indicateurs principaux")
+
+c1, c2, c3, c4 = st.columns(4)
+
+with c1:
+    st.markdown(f"""
+    <div class="card">
+        <div class="card-title">1re mi-temps</div>
+        <div class="big-number">{proba_1:.1f}%</div>
+        <div class="small-text">Potentiel de buts</div>
     </div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-# Bannière principale
-st.markdown("""
-    <div class="hero">
-        <h1>AUTOMATIC EXPERT ANALYZER,<br><span style="color: #2ea043;">IA & STATISTIQUES AUTOMATISÉES.</span></h1>
-        <p>Saisissez simplement les deux équipes et laissez l'intelligence artificielle analyser automatiquement les tendances, les mi-temps et les cotes.</p>
+with c2:
+    st.markdown(f"""
+    <div class="card">
+        <div class="card-title">2e mi-temps</div>
+        <div class="big-number">{proba_2:.1f}%</div>
+        <div class="small-text">Potentiel de buts</div>
     </div>
+    """, unsafe_allow_html=True)
+
+with c3:
+    st.markdown(f"""
+    <div class="card">
+        <div class="card-title">Total attendu</div>
+        <div class="big-number">{total:.2f}</div>
+        <div class="small-text">Buts statistiques</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with c4:
+    st.markdown(f"""
+    <div class="card">
+        <div class="card-title">Confiance</div>
+        <div class="big-number">{confiance:.0f}%</div>
+        <div class="small-text">Indice statistique</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ============================================================
+# COMPARAISON
+# ============================================================
+
+st.subheader("📈 Comparaison des mi-temps")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown(f"""
+    <div class="card">
+        <div class="card-title">1re mi-temps</div>
+        <p>Moyenne combinée : <b>{total_1:.2f}</b> buts</p>
+
+        <div class="progress-container">
+            <div class="progress-bar"
+                 style="width:{proba_1}%"></div>
+        </div>
+
+        <p class="small-text">
+            {proba_1:.1f}% du potentiel total
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown(f"""
+    <div class="card">
+        <div class="card-title">2e mi-temps</div>
+        <p>Moyenne combinée : <b>{total_2:.2f}</b> buts</p>
+
+        <div class="progress-container">
+            <div class="progress-bar"
+                 style="width:{proba_2}%"></div>
+        </div>
+
+        <p class="small-text">
+            {proba_2:.1f}% du potentiel total
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ============================================================
+# VERDICT
+# ============================================================
+
+st.subheader("🧠 Verdict BARAKA AI")
+
+st.markdown(f"""
+<div class="verdict">
+
+<div class="verdict-title">
+MI-TEMPS AVEC LE PLUS FORT POTENTIEL DE BUTS
+</div>
+
+<div class="verdict-main">
+{meilleure_mi_temps}
+</div>
+
+<div class="confidence">
+Indice de confiance : {confiance:.1f} / 100
+</div>
+
+</div>
 """, unsafe_allow_html=True)
 
-# Saisie libre des équipes uniquement (Mode 100% Automatique)
-col_home, col_vs, col_away = st.columns([5, 1, 5])
+# ============================================================
+# ANALYSE AUTOMATIQUE
+# ============================================================
 
-with col_home:
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("#### 🏠 Équipe Domicile")
-    team_home = st.text_input("Nom de l'équipe Domicile", "Lask", key="h_name")
-    st.markdown("</div>", unsafe_allow_html=True)
+st.subheader("🔎 Analyse automatique")
 
-with col_vs:
-    st.markdown("<br><h2 style='text-align: center; color: #8b949e;'>VS</h2>", unsafe_allow_html=True)
+if proba_2 > proba_1:
 
-with col_away:
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("#### ✈️ Équipe Extérieure")
-    team_away = st.text_input("Nom de l'équipe Extérieure", "Brentford FC", key="a_name")
-    st.markdown("</div>", unsafe_allow_html=True)
+    analyse = f"""
+    **{team_a} vs {team_b}**
 
-st.write("")
-st.write("")
+    Les données fournies indiquent une activité offensive plus importante
+    en deuxième période.
 
-# Bouton d'analyse automatique
-col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
-with col_b2:
-    run_auto_analysis = st.button("🚀 LANCER L'ANALYSE AUTOMATIQUE")
+    La moyenne combinée est de **{total_2:.2f} buts en deuxième mi-temps**
+    contre **{total_1:.2f} en première mi-temps**.
 
-if run_auto_analysis:
-    if not team_home or not team_away:
-        st.error("Veuillez entrer les noms des deux équipes.")
-    else:
-        # Génération automatique intelligente basée sur les noms (ou simulation experte cohérente)
-        # On utilise une graine (seed) basée sur les noms pour que le résultat soit constant pour le même match
-        seed_val = sum(ord(c) for c in team_home + team_away)
-        random.seed(seed_val)
-        
-        # Valeurs automatiques calculées par l'IA
-        home_g1 = round(random.uniform(0.9, 1.4), 2)
-        home_g2 = round(random.uniform(1.3, 1.9), 2)
-        away_g1 = round(random.uniform(0.8, 1.3), 2)
-        away_g2 = round(random.uniform(1.2, 1.8), 2)
-        
-        score_1mt = home_g1 + away_g1
-        score_2mt = home_g2 + away_g2
-        
-        # Calcul des probabilités 1N2 automatiques
-        h_power = (home_g1 + home_g2) * 1.4
-        a_power = (away_g1 + away_g2) * 1.3
-        total_power = h_power + a_power
-        
-        p_home = (h_power / total_power) * 100
-        p_away = (a_power / total_power) * 100
-        p_draw = max(18, 100 - (abs(p_home - p_away) + 38))
-        
-        sum_p = p_home + p_away + p_draw
-        p_home = (p_home / sum_p) * 100
-        p_away = (p_away / sum_p) * 100
-        p_draw = (p_draw / sum_p) * 100
+    Plusieurs facteurs peuvent expliquer cette tendance : fatigue défensive,
+    changements tactiques après la pause, espaces plus importants et
+    nécessité pour une équipe menée au score de prendre davantage de risques.
 
-        gg_probability = "Élevée (Tendance GG ⚽)" if (score_1mt + score_2mt > 4.5) else "Modérée / Équilibrée"
+    **Conclusion statistique : la deuxième mi-temps présente actuellement
+    le potentiel de buts le plus élevé.**
+    """
 
-        # Affichage du rapport automatique
-        st.markdown("<div class='result-box'>", unsafe_allow_html=True)
-        st.markdown("<h2 style='color: #2ea043; text-align: center;'>📊 RAPPORT D'ANALYSE AUTOMATIQUE - BARAKA AI</h2>", unsafe_allow_html=True)
-        st.markdown(f"<p style='text-align: center; font-size: 1.2rem;'><b>{team_home}</b> vs <b>{team_away}</b></p>", unsafe_allow_html=True)
-        st.write("---")
-        
-        res_col1, res_col2 = st.columns(2)
-        
-        with res_col1:
-            st.markdown("#### 🎯 Probabilités & Marchés Clés")
-            st.write(f"• Victoire **{team_home}** : **{p_home:.1f}%**")
-            st.write(f"• Match Nul : **{p_draw:.1f}%**")
-            st.write(f"• Victoire **{team_away}** : **{p_away:.1f}%**")
-            st.write(f"• Option **GG / NG** : **{gg_probability}**")
-            
-        with res_col2:
-            st.markdown("#### ⏱️ Analyse Automatique des Mi-Temps")
-            st.write(f"• Indice de buts attendus (1MT) : **{score_1mt:.2f}**")
-            st.write(f"• Indice de buts attendus (2MT) : **{score_2mt:.2f}**")
-            
-        st.write("")
-        if score_1mt > score_2mt:
-            st.success(f"🔥 **Verdict IA Automatique :** La **1ère mi-temps** de **{team_home} vs {team_away}** présente le plus fort potentiel de buts !")
-        elif score_2mt > score_1mt:
-            st.success(f"🔥 **Verdict IA Automatique :** La **2ème mi-temps** de **{team_home} vs {team_away}** sera la plus explosive (hausse de la fatigue et des espaces).")
-        else:
-            st.info(f"⚖️ **Verdict IA Automatique :** Intensité de jeu linéaire et constante sur l'ensemble du match.")
-            
-        st.markdown("</div>", unsafe_allow_html=True)
+else:
+
+    analyse = f"""
+    **{team_a} vs {team_b}**
+
+    Les données fournies indiquent une activité offensive plus importante
+    en première période.
+
+    La moyenne combinée est de **{total_1:.2f} buts en première mi-temps**
+    contre **{total_2:.2f} en deuxième mi-temps**.
+
+    Cela peut indiquer un début de match plus agressif, un pressing élevé
+    ou une tendance des équipes à chercher rapidement l'ouverture du score.
+
+    **Conclusion statistique : la première mi-temps présente actuellement
+    le potentiel de buts le plus élevé.**
+    """
+
+st.markdown(
+    f'<div class="card">{analyse}</div>',
+    unsafe_allow_html=True
+)
+
+# ============================================================
+# PERIODES DU MATCH
+# ============================================================
+
+st.subheader("⏱️ Zones potentielles de buts")
+
+periods = [
+    "0–15 min",
+    "16–30 min",
+    "31–45+ min",
+    "46–60 min",
+    "61–75 min",
+    "76–90+ min"
+]
+
+# Simulation indicative basée sur la tendance des mi-temps
+base = [
+    0.10,
+    0.14,
+    0.16,
+    0.15,
+    0.20,
+    0.25
+]
+
+for period, value in zip(periods, base):
+
+    st.write(
+        f"**{period} — potentiel indicatif : {value*100:.0f}%**"
+    )
+
+    st.progress(value)
+
+# ============================================================
+# AVERTISSEMENT
+# ============================================================
+
+st.warning(
+    "⚠️ Cette analyse est statistique et ne garantit pas le résultat "
+    "d'un match. Plus les données historiques sont fiables et nombreuses, "
+    "plus l'analyse peut être pertinente."
+)
+
+# ============================================================
+# FOOTER
+# ============================================================
+
+st.divider()
+
+st.caption(
+    "BARAKA AI © 2026 — Match Analyzer Pro | "
+    "Analyse statistique football"
+)
 
 
 
